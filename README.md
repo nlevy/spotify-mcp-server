@@ -23,6 +23,11 @@ A Model Context Protocol (MCP) server that provides Spotify integration, allowin
 - **Add Tracks to Playlist** - Add tracks to existing playlists
 - **Get User Playlists** - Get current user's playlists
 
+### User Tools
+
+- **Get User Top Artists** - Get user's most listened to artists
+- **Get User Top Tracks** - Get user's most listened to tracks
+
 ## Prerequisites
 
 - Python 3.8+
@@ -118,6 +123,16 @@ add_tracks_to_playlist(playlist_id="playlist_id", track_uris=["spotify:track:tra
 get_user_playlists()
 ```
 
+#### User Data
+
+```python
+# Get user's top artists
+get_user_top_artists(time_range="medium_term", limit=20)
+
+# Get user's top tracks
+get_user_top_tracks(time_range="short_term", limit=10)
+```
+
 ## Project Structure
 
 ```
@@ -127,7 +142,8 @@ spotify-mcp/
 │   ├── __init__.py
 │   ├── artist_tools.py     # Artist-related tools
 │   ├── playlist_tools.py   # Playlist-related tools
-│   └── albums.py          # Album-related tools
+│   ├── albums.py          # Album-related tools
+│   └── user_tools.py      # User-related tools
 ├── .env                    # Environment variables
 ├── .spotify_cache         # Spotify OAuth cache
 ├── requirements.txt        # Python dependencies
@@ -276,11 +292,47 @@ Get current user's playlists.
 
 - List of user's playlists with details including track count and privacy settings
 
+### User Tools
+
+#### `get_user_top_artists`
+
+Get user's most listened to artists from Spotify.
+
+**Parameters:**
+
+- `time_range` (str, optional): Time period for top artists (default: "medium_term")
+  - `"short_term"`: Last 4 weeks
+  - `"medium_term"`: Last 6 months
+  - `"long_term"`: Several years
+- `limit` (int, optional): Maximum number of artists to return (default: 20, max: 50)
+- `offset` (int, optional): Index of the first artist to return (default: 0)
+
+**Returns:**
+
+- List of top artists with ID, name, popularity, followers, genres, and Spotify URL
+
+#### `get_user_top_tracks`
+
+Get user's most listened to tracks from Spotify.
+
+**Parameters:**
+
+- `time_range` (str, optional): Time period for top tracks (default: "medium_term")
+  - `"short_term"`: Last 4 weeks
+  - `"medium_term"`: Last 6 months
+  - `"long_term"`: Several years
+- `limit` (int, optional): Maximum number of tracks to return (default: 20, max: 50)
+- `offset` (int, optional): Index of the first track to return (default: 0)
+
+**Returns:**
+
+- List of top tracks with ID, name, album info, artists, popularity, duration, and Spotify URL
+
 ## Development
 
 ### Adding New Tools
 
-1. Create a new function in the appropriate tool module (`artist_tools.py`, `playlist_tools.py`, or `albums.py`)
+1. Create a new function in the appropriate tool module (`artist_tools.py`, `playlist_tools.py`, `albums.py`, or `user_tools.py`)
 2. Add the function to the `__init__.py` exports
 3. Create a wrapper function in `spotify_mcp_server.py`
 4. Copy the docstring and register the tool
@@ -308,4 +360,3 @@ mcp dev spotify_mcp_server.py
 - Spotify has rate limits on API calls
 - The server includes error handling for rate limit responses
 - Consider implementing caching for frequently accessed data
-

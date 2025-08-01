@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 from mcp_tools import search_artists_tool, get_artist_top_tracks_tool, get_artist_tool, get_artist_albums_tool, ArtistSearchRequest
 from mcp_tools import create_playlist_tool, add_tracks_to_playlist_tool, get_user_playlists_tool, PlaylistCreateRequest, AddTracksRequest
 from mcp_tools import get_album_tool, get_album_tracks_tool, get_new_releases_tool
+from mcp_tools import get_user_top_artists_tool, get_user_top_tracks_tool
 
 load_dotenv()
 
@@ -48,7 +49,7 @@ def _setup_spotify_client():
             raise ValueError("Spotify credentials not found in environment variables")
         
         # Setup Spotify OAuth
-        scope = "playlist-modify-public playlist-modify-private user-library-read user-read-private"
+        scope = "playlist-modify-public playlist-modify-private user-library-read user-read-private user-top-read"
         
         auth_manager = SpotifyOAuth(
             client_id=client_id,
@@ -98,6 +99,12 @@ async def get_album_tracks(album_id: str, market: str = "US", limit: int = 20, o
 async def get_new_releases(country: str = "US", limit: int = 20, offset: int = 0) -> Dict[str, Any]:
     return await get_new_releases_tool(spotify, country, limit, offset)
 
+async def get_user_top_artists(time_range: str = "medium_term", limit: int = 20, offset: int = 0) -> Dict[str, Any]:
+    return await get_user_top_artists_tool(spotify, time_range, limit, offset)
+
+async def get_user_top_tracks(time_range: str = "medium_term", limit: int = 20, offset: int = 0) -> Dict[str, Any]:
+    return await get_user_top_tracks_tool(spotify, time_range, limit, offset)
+
 # Copy docstrings from original functions
 create_playlist.__doc__ = create_playlist_tool.__doc__
 search_artists.__doc__ = search_artists_tool.__doc__
@@ -109,6 +116,8 @@ get_user_playlists.__doc__ = get_user_playlists_tool.__doc__
 get_album.__doc__ = get_album_tool.__doc__
 get_album_tracks.__doc__ = get_album_tracks_tool.__doc__
 get_new_releases.__doc__ = get_new_releases_tool.__doc__
+get_user_top_artists.__doc__ = get_user_top_artists_tool.__doc__
+get_user_top_tracks.__doc__ = get_user_top_tracks_tool.__doc__
 
 # Register tools with FastMCP
 app.tool()(create_playlist)
@@ -121,4 +130,6 @@ app.tool()(get_user_playlists)
 app.tool()(get_album)
 app.tool()(get_album_tracks)
 app.tool()(get_new_releases)
+app.tool()(get_user_top_artists)
+app.tool()(get_user_top_tracks)
 
