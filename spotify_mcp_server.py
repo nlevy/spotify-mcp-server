@@ -44,19 +44,22 @@ def _setup_spotify_client():
         client_id = os.getenv('SPOTIFY_CLIENT_ID')
         client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
         redirect_uri = os.getenv('SPOTIFY_REDIRECT_URI', 'http://localhost:8888/callback')
-        
+
         if not client_id or not client_secret:
             raise ValueError("Spotify credentials not found in environment variables")
-        
-        # Setup Spotify OAuth
+
+        # Setup Spotify OAuth with persistent cache in home directory
         scope = "playlist-modify-public playlist-modify-private user-library-read user-read-private user-top-read"
-        
+
+        # Use home directory for cache so it persists when using uvx
+        cache_path = os.getenv('SPOTIFY_CACHE_PATH', os.path.expanduser('~/.spotify_mcp_cache'))
+
         auth_manager = SpotifyOAuth(
             client_id=client_id,
             client_secret=client_secret,
             redirect_uri=redirect_uri,
             scope=scope,
-            cache_path=".spotify_cache"
+            cache_path=cache_path
         )
         
         spotify = spotipy.Spotify(auth_manager=auth_manager)
