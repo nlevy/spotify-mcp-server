@@ -28,9 +28,40 @@ A Model Context Protocol (MCP) server that provides Spotify integration, allowin
 - **Get User Top Artists** - Get user's most listened to artists
 - **Get User Top Tracks** - Get user's most listened to tracks
 
-## Prerequisites
+## Installation
 
-- Python 3.8+
+### For Claude Desktop Users (Recommended)
+
+The easiest way to use this server with Claude Desktop is via PyPI:
+
+1. Get your Spotify API credentials (see [Spotify API Setup](#spotify-api-setup) below)
+2. Add to your Claude Desktop config at `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS):
+
+```json
+{
+  "mcpServers": {
+    "Spotify": {
+      "command": "uvx",
+      "args": ["spotify-mcp-server"],
+      "env": {
+        "SPOTIFY_CLIENT_ID": "your_client_id_here",
+        "SPOTIFY_CLIENT_SECRET": "your_client_secret_here",
+        "SPOTIFY_REDIRECT_URI": "http://localhost:8888/callback"
+      }
+    }
+  }
+}
+```
+
+3. Restart Claude Desktop
+4. On first use, authenticate with Spotify when prompted
+
+
+## Development Setup
+
+### Prerequisites
+
+- Python 3.10+
 - Spotify Developer Account
 - MCP Client (like Claude Desktop, Cursor, etc.)
 
@@ -46,7 +77,7 @@ uv sync
 pip install -r requirements.txt
 ```
 
-### 2. Spotify API Setup
+### 2. Spotify API Setup {#spotify-api-setup}
 
 1. Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
 2. Create a new application

@@ -133,3 +133,9 @@ app.tool()(get_new_releases)
 app.tool()(get_user_top_artists)
 app.tool()(get_user_top_tracks)
 
+def main():
+    """Entry point for the MCP server"""
+    app.run()
+
+if __name__ == "__main__":
+    main()
