@@ -51,8 +51,20 @@ def _setup_spotify_client():
         # Setup Spotify OAuth with persistent cache in home directory
         scope = "playlist-modify-public playlist-modify-private user-library-read user-read-private user-top-read"
 
-        # Use home directory for cache so it persists when using uvx
-        cache_path = os.getenv('SPOTIFY_CACHE_PATH', os.path.expanduser('~/.spotify_mcp_cache'))
+        # Get cache directory from env or use home directory
+        cache_dir = os.getenv('SPOTIFY_CACHE_DIR')
+        if not cache_dir:
+            cache_dir = os.path.expanduser('~/.spotify_mcp_cache')
+            logger.info(f'expanded {cache_dir}')
+
+        # Ensure cache directory exists
+        if not os.path.exists(cache_dir):
+            os.makedirs(cache_dir, exist_ok=True)
+            logger.info(f"Created cache directory: {cache_dir}")
+
+        # Cache file path (Spotify expects a file, not a directory)
+        cache_path = os.path.join(cache_dir, '.spotify_cache')
+        logger.info(f"Using cache file: {cache_path}")
 
         auth_manager = SpotifyOAuth(
             client_id=client_id,
