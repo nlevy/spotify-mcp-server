@@ -43,7 +43,7 @@ def _setup_spotify_client():
     try:
         client_id = os.getenv('SPOTIFY_CLIENT_ID')
         client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
-        redirect_uri = os.getenv('SPOTIFY_REDIRECT_URI', 'http://localhost:8888/callback')
+        redirect_uri = os.getenv('SPOTIFY_REDIRECT_URI', 'http://127.0.0.1:8888/callback')
 
         if not client_id or not client_secret:
             raise ValueError("Spotify credentials not found in environment variables")
